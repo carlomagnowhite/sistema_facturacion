@@ -1,8 +1,15 @@
 
 package GUI;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * @author Matt
@@ -139,25 +146,46 @@ public class Facturas extends javax.swing.JFrame {
         // TODO add your handling code here:
         generarFactura();
     }//GEN-LAST:event_jbtnVerFacturaActionPerformed
-    
-    public void setParentFrame(MainFrame mf){
+
+    public void setParentFrame(MainFrame mf) {
         this.mf = mf;
     }
-    
-    public void onClose(){
+
+    public void onClose() {
         mf.setEnabled(true);
         mf.requestFocus();
         dispose();
     }
-    
-    public void generarFactura(){
+
+    public void generarFactura() {
         if (jtblFacturas.getSelectedRow() != -1) {
-            
-            
-        }else{
-            JOptionPane.showMessageDialog(this, "Para generar una factura, seleccione una factura de la tabla.","Factura NO seleccionada",JOptionPane.INFORMATION_MESSAGE);
+            int numero_factura = Integer.parseInt(jtblFacturas.getValueAt(jtblFacturas.getSelectedRow(), 0).toString());
+            try {
+                
+                System.out.println(numero_factura);
+                JasperReport reporte = null;
+                String path = "src\\GUI\\factura.jasper";
+
+                Map parametro = new HashMap();
+                parametro.put("num_fac", numero_factura);
+
+                reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+                JasperPrint jprint = JasperFillManager.fillReport(path, parametro, con.ConexionBD());
+
+                JasperViewer view = new JasperViewer(jprint, false);
+
+                view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+                view.setVisible(true);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error: "+ex.getMessage(),"RUNTIME EXCEPTION JASPER",JOptionPane.ERROR_MESSAGE);
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Para generar una factura, seleccione una factura de la tabla.", "Factura NO seleccionada", JOptionPane.INFORMATION_MESSAGE);
         }
-        
+
     }
     
     public void cargarFacturas(){
@@ -181,6 +209,7 @@ public class Facturas extends javax.swing.JFrame {
                 factura[7] = rs.getFloat("TOTAL");
                 dtm.addRow(factura);
             }
+            c.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error: "+e,"RUNTIME EXCEPTION",JOptionPane.ERROR_MESSAGE);
         }

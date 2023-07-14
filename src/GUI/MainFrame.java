@@ -636,7 +636,7 @@ public class MainFrame extends javax.swing.JFrame {
                             ps1.setInt(5, numero_factura);
                             ps1.executeUpdate();
                         }
-
+                        c.close();
                         JOptionPane.showMessageDialog(this, "Factura Nro: +" + numero_factura + " Cerrada.", "SUCCESFULL", JOptionPane.PLAIN_MESSAGE);
                         reiniciarFactura();
 
@@ -811,6 +811,7 @@ public class MainFrame extends javax.swing.JFrame {
                 cliente[5] = rs.getString("TEL_CLI");
                 cliente[6] = rs.getString("COR_CLI");
             }
+            c.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "ERROR: " +e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
         }
@@ -841,6 +842,7 @@ public class MainFrame extends javax.swing.JFrame {
                 producto[1] = rs.getString("NOM_PRO");
                 producto[2] = rs.getFloat("PRE_PRO");
             }
+            c.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "ERROR: " +e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
         }
@@ -860,6 +862,7 @@ public class MainFrame extends javax.swing.JFrame {
                     return true;
                 }
             }
+            c.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "ERROR: " + e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
         }
@@ -884,7 +887,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
             
             jcbxVendedores.setModel(dcb);
-            
+            c.close();
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "ERROR: " + e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);

@@ -583,6 +583,7 @@ public class GestorClientes extends javax.swing.JFrame {
                     return true;
                 }
             }
+            c.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "ERROR: " + e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
         }
@@ -617,6 +618,7 @@ public class GestorClientes extends javax.swing.JFrame {
                             if (ps.executeUpdate() > 0) {
                                 JOptionPane.showMessageDialog(this, "Cliente creado con éxito", "Inserción realizada", JOptionPane.PLAIN_MESSAGE);
                                 limpiarCampos();
+                                c.close();
                             } else {
                                 JOptionPane.showMessageDialog(this, "Error al intentar crear el cliente", "Inserción:ERROR", JOptionPane.ERROR_MESSAGE);
                             }
@@ -658,7 +660,7 @@ public class GestorClientes extends javax.swing.JFrame {
                             cliente [5] = rs.getString("TEL_CLI");
                             cliente [6] = rs.getString("COR_CLI");
                         }
-                        
+                        c.close();
                         jtxtCedula.setText(cliente[0]);
                         jtxtNombre.setText(cliente[1]);
                         jtxtApellido.setText(cliente[2]);
@@ -708,6 +710,7 @@ public class GestorClientes extends javax.swing.JFrame {
                         if (ps.executeUpdate() > 0) {
                             JOptionPane.showMessageDialog(this, "Datos de cliente modificados correctamente", "Modificación realizada", JOptionPane.PLAIN_MESSAGE);
                             limpiarCampos();
+                            c.close();
                         } else {
                             JOptionPane.showMessageDialog(this, "Ningún registro afectado", "WRONG", JOptionPane.INFORMATION_MESSAGE);
                         }
@@ -736,7 +739,9 @@ public class GestorClientes extends javax.swing.JFrame {
                     PreparedStatement ps = c.prepareStatement(sql);
                     if (JOptionPane.showConfirmDialog(this, "Está seguro que desea eliminar el cliente con la cédula: " +cliente,"Confirmar",JOptionPane.YES_NO_OPTION) == 0) {
                         JOptionPane.showMessageDialog(this, ps.executeUpdate() > 0 ? "Cliente borrado exitosamente" : "Error al borrar el cliente","Result",JOptionPane.PLAIN_MESSAGE);
+                        c.close();
                     }
+                    
                 }else{
                     JOptionPane.showMessageDialog(this, "Cliente no existente","Verificar cédula",JOptionPane.WARNING_MESSAGE);
                 }
