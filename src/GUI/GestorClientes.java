@@ -4,7 +4,6 @@
  */
 package GUI;
 
-import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import java.sql.*;
 /**
@@ -17,7 +16,7 @@ public class GestorClientes extends javax.swing.JFrame {
     private MainFrame mf;
     Conexion con = new Conexion();
     String cliente [] = new String[7];
-    
+    Validador v = new Validador();
     /**
      * Creates new form GestorClientes
      */
@@ -81,7 +80,7 @@ public class GestorClientes extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setUndecorated(true);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setForeground(new java.awt.Color(255, 153, 0));
 
         jPanelDatos.setBackground(new java.awt.Color(102, 102, 102));
         jPanelDatos.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -139,11 +138,21 @@ public class GestorClientes extends javax.swing.JFrame {
                 jtxtNombreActionPerformed(evt);
             }
         });
+        jtxtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtxtNombreKeyTyped(evt);
+            }
+        });
 
         jtxtApellido.setBackground(new java.awt.Color(102, 102, 102));
         jtxtApellido.setFont(new java.awt.Font("Roboto Medium", 1, 12)); // NOI18N
         jtxtApellido.setForeground(new java.awt.Color(255, 255, 255));
         jtxtApellido.setBorder(null);
+        jtxtApellido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtxtApellidoKeyTyped(evt);
+            }
+        });
 
         jtxtDireccion.setBackground(new java.awt.Color(102, 102, 102));
         jtxtDireccion.setFont(new java.awt.Font("Roboto Medium", 1, 12)); // NOI18N
@@ -197,6 +206,7 @@ public class GestorClientes extends javax.swing.JFrame {
         jtxtBuscarCedula.setBackground(new java.awt.Color(102, 102, 102));
         jtxtBuscarCedula.setFont(new java.awt.Font("Roboto Black", 1, 24)); // NOI18N
         jtxtBuscarCedula.setForeground(new java.awt.Color(255, 255, 255));
+        jtxtBuscarCedula.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jtxtBuscarCedula.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 jtxtBuscarCedulaFocusGained(evt);
@@ -296,8 +306,7 @@ public class GestorClientes extends javax.swing.JFrame {
                                 .addGap(37, 37, 37)
                                 .addComponent(jtxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDatosLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel1)
@@ -376,29 +385,29 @@ public class GestorClientes extends javax.swing.JFrame {
         jPanelBotonesLayout.setHorizontalGroup(
             jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelBotonesLayout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
-                .addGroup(jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jButtonDone, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
-                    .addComponent(jButtonEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonBack, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(17, 17, 17))
+                .addContainerGap(28, Short.MAX_VALUE)
+                .addGroup(jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButtonLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonDone, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
         );
         jPanelBotonesLayout.setVerticalGroup(
             jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelBotonesLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17)
+                .addComponent(jButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonDone, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonDone, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(jButtonLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -534,11 +543,37 @@ public class GestorClientes extends javax.swing.JFrame {
         // TODO add your handling code here:
         eliminarCliente();
     }//GEN-LAST:event_jButtonDeleteActionPerformed
+
+    private void jtxtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtxtNombreKeyTyped
+        // TODO add your handling code here:
+        char c = evt.getKeyChar();
+
+        if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
+            evt.consume();
+        }
+
+        if (jtxtNombre.getText().trim().length() >= 20) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_jtxtNombreKeyTyped
+
+    private void jtxtApellidoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtxtApellidoKeyTyped
+        // TODO add your handling code here:
+        char c = evt.getKeyChar();
+        
+        if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
+            evt.consume();
+        }
+
+        if (jtxtApellido.getText().trim().length() >= 20) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_jtxtApellidoKeyTyped
     // metodo para comprobar la existencia de un cliente en la BD por cedula START
     public boolean existCustomer(String cedula) {
         try {
             Connection c = con.ConexionBD();
-            String sql = "SELECT COUNT(*) FROM clientes WHERE CED_CLI = ?;";
+            String sql = "SELECT COUNT(*) FROM heroku_aba338fe797a93b.clientes WHERE CED_CLI = ?;";
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, cedula);
             ResultSet rs = ps.executeQuery();
@@ -564,12 +599,12 @@ public class GestorClientes extends javax.swing.JFrame {
             if (cedula.isEmpty() || nombre.isEmpty() || apellido.isEmpty() || direccion.isEmpty() || nacimiento.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Rellene todos los campos solicitados", "ADVERTENCIA", JOptionPane.WARNING_MESSAGE);
             } else {
-                if (validarCedula(jtxtCedula.getText().trim())) {
+                if (v.validarCedula(cedula) && v.verificarCedula(cedula)) {
                     if (existCustomer(jtxtCedula.getText().trim())) {
                         JOptionPane.showMessageDialog(this, "El cliente ya existe", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        if (validarCorreo(correo) && validarTelefono(telefono)) {
-                            String sql = "INSERT INTO clientes VALUES (?,?,?,?,?,?,?);";
+                        if (v.validarCorreo(correo) && v.validarTelefono(telefono)) {
+                            String sql = "INSERT INTO heroku_aba338fe797a93b.clientes VALUES (?,?,?,?,?,?,?);";
                             Connection c = con.ConexionBD();
                             PreparedStatement ps = c.prepareStatement(sql);
                             ps.setString(1, cedula);
@@ -606,10 +641,10 @@ public class GestorClientes extends javax.swing.JFrame {
             if (jtxtBuscarCedula.getText().trim().isEmpty() || jtxtBuscarCedula.getText().trim().equals("BUSCAR") || jtxtBuscarCedula.getText().trim().length() < 10) {
                 JOptionPane.showMessageDialog(this, "Para editar un cliente, ingrese la cédula", "Ingresar cédula", JOptionPane.WARNING_MESSAGE);
             } else {
-                if (validarCedula(jtxtBuscarCedula.getText().trim())) {
+                if (v.validarCedula(jtxtBuscarCedula.getText().trim()) && v.verificarCedula(jtxtBuscarCedula.getText().trim())) {
                     if (existCustomer(jtxtBuscarCedula.getText().trim())) {
                         Connection c = con.ConexionBD();
-                        String sql = "SELECT * FROM clientes WHERE CED_CLI = '"+jtxtBuscarCedula.getText().trim()+"';";
+                        String sql = "SELECT * FROM heroku_aba338fe797a93b.clientes WHERE CED_CLI = '"+jtxtBuscarCedula.getText().trim()+"';";
                         Statement s = c.createStatement();
                         ResultSet rs = s.executeQuery(sql);
                         
@@ -660,8 +695,8 @@ public class GestorClientes extends javax.swing.JFrame {
                 if (nombre.equals(cliente[1]) && apellido.equals(cliente[2]) && direccion.equals(cliente[3]) && telefono.equals(cliente[5]) && correo.equals(cliente[6])) {
                     JOptionPane.showMessageDialog(this, "Revise que la información a modificar sea diferente a la actual.");
                 } else {
-                    if (validarCorreo(correo) && validarTelefono(telefono)) {
-                        String sql = "UPDATE clientes SET NOM_CLI = ?, APE_CLI = ?, DIR_CLI = ?, TEL_CLI = ?, COR_CLI = ? WHERE CED_CLI = '" + jtxtCedula.getText().trim() + "';";
+                    if (v.validarCorreo(correo) && v.validarTelefono(telefono)) {
+                        String sql = "UPDATE heroku_aba338fe797a93b.clientes SET NOM_CLI = ?, APE_CLI = ?, DIR_CLI = ?, TEL_CLI = ?, COR_CLI = ? WHERE CED_CLI = '" + jtxtCedula.getText().trim() + "';";
                         Connection c = con.ConexionBD();
                         PreparedStatement ps = c.prepareStatement(sql);
                         ps.setString(1, nombre);
@@ -694,10 +729,10 @@ public class GestorClientes extends javax.swing.JFrame {
         try {
             limpiarCampos();
             String cliente = JOptionPane.showInputDialog("Ingrese la cédula del cliente a eliminar");
-            if (validarCedula(cliente)) {
+            if (v.validarCedula(jtxtBuscarCedula.getText().trim()) && v.verificarCedula(jtxtBuscarCedula.getText().trim())) {
                 if (existCustomer(cliente)) {
                     Connection c = con.ConexionBD();
-                    String sql = "DELETE FROM clientes WHERE CED_CLI = '"+cliente+"';";
+                    String sql = "DELETE FROM heroku_aba338fe797a93b.clientes WHERE CED_CLI = '"+cliente+"';";
                     PreparedStatement ps = c.prepareStatement(sql);
                     if (JOptionPane.showConfirmDialog(this, "Está seguro que desea eliminar el cliente con la cédula: " +cliente,"Confirmar",JOptionPane.YES_NO_OPTION) == 0) {
                         JOptionPane.showMessageDialog(this, ps.executeUpdate() > 0 ? "Cliente borrado exitosamente" : "Error al borrar el cliente","Result",JOptionPane.PLAIN_MESSAGE);
@@ -724,22 +759,7 @@ public class GestorClientes extends javax.swing.JFrame {
         mf.requestFocus();
         dispose();
     }
-    
-    public boolean validarCedula(String cedula){
-        String regex = "^(0[1-9]|1[0-9]|2[0-4])[0-9]{8}$";
-        return Pattern.matches(regex, cedula);
-    }
-    
-    public boolean validarCorreo(String correo){
-        String regex = "^[A-Za-z0-9._%+-]+@(gmail\\.com|hotmail\\.com|uta\\.edu\\.ec|outlook\\.com)$";
-        return Pattern.matches(regex, correo);
-    }
-    
-    public boolean validarTelefono(String telefono){
-        String regex = "^09[0-9]{8}$";
-        return Pattern.matches(regex, telefono);
-    }
-    
+     
     public void limpiarCampos(){
         jtxtCedula.setText("");
         jtxtNombre.setText("");

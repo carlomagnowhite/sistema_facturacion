@@ -26,7 +26,7 @@ public class Conexion {
             //Registrar el driver
             Class.forName("com.mysql.jdbc.Driver");
             //Creamos una conexión a la Base de Datos
-            conex = DriverManager.getConnection("jdbc:mysql://localhost/sistema_facturacion", "root", "");
+            conex = DriverManager.getConnection("jdbc:mysql://us-cdbr-east-06.cleardb.net", "b41e9b73ba6f70", "3161aadc");
             
             
             // Si hay errores informamos al usuario. 

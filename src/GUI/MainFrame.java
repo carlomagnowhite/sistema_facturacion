@@ -23,16 +23,17 @@ public class MainFrame extends javax.swing.JFrame {
     private DefaultTableModel dtm = new DefaultTableModel();
     Redimensionador r = new Redimensionador();
     GestorClientes gc = new GestorClientes();
+    Validador v = new Validador();
     String cliente[] = new String[7];
     Object producto[] = new Object[3];
-    Object detalle_producto [] = new Object[3];
+    Object detalle_producto [] = new Object[4];
     String vendedores[] = new String[4];
     float acum = 0;
     
     public MainFrame() {
         initComponents();
         
-        r.resizeImageIcon(jButtonImprimir, "src/imgs/impresora.png");
+        r.resizeImageIcon(jButtonImprimir, "src/imgs/invoice.png");
         r.resizeImageIcon(jButtonSalir, "src/imgs/cerrar.png");
         r.resizeImageIcon(jButtonClientes, "src/imgs/user.png");
         r.resizeImageIcon(jButtonBuscarCliente, "src/imgs/searching.png");
@@ -72,6 +73,7 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jtblDatos = new javax.swing.JTable();
         jbtnEliminar = new javax.swing.JButton();
+        jlblUltimoProducto = new javax.swing.JLabel();
         jPanelDatosPieFactura = new javax.swing.JPanel();
         jlblCantidadPro = new javax.swing.JLabel();
         jlblEVenta = new javax.swing.JLabel();
@@ -232,6 +234,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
+        jPanel3.setBackground(new java.awt.Color(71, 63, 87));
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jButtonImprimir.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -304,18 +307,25 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        jlblUltimoProducto.setFont(new java.awt.Font("Roboto Light", 3, 18)); // NOI18N
+        jlblUltimoProducto.setForeground(new java.awt.Color(255, 255, 0));
+
         javax.swing.GroupLayout jPanelDetalleProductosLayout = new javax.swing.GroupLayout(jPanelDetalleProductos);
         jPanelDetalleProductos.setLayout(jPanelDetalleProductosLayout);
         jPanelDetalleProductosLayout.setHorizontalGroup(
             jPanelDetalleProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDetalleProductosLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jbtnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49))
             .addGroup(jPanelDetalleProductosLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 792, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addGroup(jPanelDetalleProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelDetalleProductosLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jlblUltimoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addComponent(jbtnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(49, 49, 49))
+                    .addGroup(jPanelDetalleProductosLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 792, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(25, Short.MAX_VALUE))))
         );
         jPanelDetalleProductosLayout.setVerticalGroup(
             jPanelDetalleProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -323,7 +333,9 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jbtnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                .addGroup(jPanelDetalleProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jlblUltimoProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jbtnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -518,6 +530,10 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButtonImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonImprimirActionPerformed
         // TODO add your handling code here:
+        Facturas f = new Facturas();
+        f.setParentFrame(MainFrame.this);
+        f.setVisible(true);
+        this.setEnabled(false);
     }//GEN-LAST:event_jButtonImprimirActionPerformed
 
     private void jButtonClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClientesActionPerformed
@@ -589,43 +605,57 @@ public class MainFrame extends javax.swing.JFrame {
         try {
             if (jcbxPago.getSelectedIndex() != 0 && jcbxVendedores.getSelectedIndex() != 0) {
                 Connection c = con.ConexionBD();
-                String sql_maestro = "INSERT INTO maestro_facturas (FEC_HOR_FAC, CED_CLI, ID_VEN, MET_PAG, CANT_PRO, SUBTOTAL, TOTAL) VALUES (?,?,?,?,?,?,?)";
-                String sql_detalle = "INSERT INTO detalle_productos VALUES  ?,?,?,?";
-                PreparedStatement ps = c.prepareStatement(sql_maestro);
+                String sql_maestro = "INSERT INTO heroku_aba338fe797a93b.maestro_facturas (FEC_HOR_FAC, CED_CLI, ID_VEN, MET_PAG, CANT_PRO, SUBTOTAL, TOTAL) VALUES (?,?,?,?,?,?,?)";
+                String sql_detalle = "INSERT INTO heroku_aba338fe797a93b.detalle_productos (CANT,COD_PRO, NOM_PRO, PRE_UNI , NUM_FAC) VALUES  (?,?,?,?,?)";
+                PreparedStatement ps = c.prepareStatement(sql_maestro, PreparedStatement.RETURN_GENERATED_KEYS);
                 ps.setString(1, jlblFecha.getText());
                 ps.setString(2, cliente[0]);
-                ps.setString(3, jcbxVendedores.getSelectedItem().toString().substring(0,6));
+                ps.setString(3, jcbxVendedores.getSelectedItem().toString().substring(0, 6));
                 ps.setString(4, jcbxPago.getSelectedItem().toString());
                 ps.setInt(5, Integer.parseInt(jlblCantidadProducto.getText()));
                 ps.setFloat(6, Float.parseFloat(jlblSubtotal.getText()));
                 ps.setFloat(7, Float.parseFloat(jlblTotal.getText()));
-                
-                if (ps.executeUpdate() > 0 ) {
-                    PreparedStatement ps1 = c.prepareStatement(sql_detalle);
-                    System.out.println("insertar detalle");
-                    /*for (int i = 0; i < jtblDatos.getRowCount(); i++) {
-                        for (int j = 0; j < jtblDatos.getColumnCount(); j++) {
-                            ps1.setInt(1, Integer.parseInt(jtblDatos.getValueAt(i, j).toString()));
-                            ps1.setString(2,jtblDatos.getValueAt(i, NORMAL));
-                            ps1.setString(3, );
+
+                if (ps.executeUpdate() > 0) {
+                    ResultSet keys = ps.getGeneratedKeys();
+                    int numero_factura = -1;
+                    if (keys.next()) {
+                        numero_factura = keys.getInt(1);
+                        PreparedStatement ps1 = c.prepareStatement(sql_detalle);
+
+                        for (int i = 0; i < jtblDatos.getRowCount(); i++) {
+                            int cantidad = Integer.parseInt(jtblDatos.getValueAt(i, 0).toString());
+                            String nombre_pro = jtblDatos.getValueAt(i, 2).toString();
+                            String codigo = jtblDatos.getValueAt(i, 1).toString();
+                            float unitario = Float.parseFloat(jtblDatos.getValueAt(i, 3).toString());
+                            
+                            ps1.setInt(1, cantidad);
+                            ps1.setString(2, codigo);
+                            ps1.setString(3, nombre_pro);
+                            ps1.setFloat(4, unitario);
+                            ps1.setInt(5, numero_factura);
+                            ps1.executeUpdate();
                         }
-                    }*/
-                    
-                    
-                }else{
-                    JOptionPane.showMessageDialog(this, "Error al cerrar el maestro","ERROR",JOptionPane.ERROR_MESSAGE);
+
+                        JOptionPane.showMessageDialog(this, "Factura Nro: +" + numero_factura + " Cerrada.", "SUCCESFULL", JOptionPane.PLAIN_MESSAGE);
+                        reiniciarFactura();
+
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al cerrar el maestro", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-            }else{
-                JOptionPane.showMessageDialog(this, "Seleccionar vendedor o método de pago","WARNING",JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Seleccionar vendedor o método de pago", "WARNING", JOptionPane.WARNING_MESSAGE);
                 jtxtProducto.requestFocus();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "ERROR: " + e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
         }
-        
+
     }
-    
-    public void bgLabel(){
+
+    public void bgLabel() {
         jlblDatosCliente.setOpaque(true);
         jlblFecha.setOpaque(true);
         jlblCantidadProducto.setOpaque(true);
@@ -633,14 +663,15 @@ public class MainFrame extends javax.swing.JFrame {
         jlblSubtotal.setOpaque(true);
         jlblTotal.setOpaque(true);
     }
-    public void eliminarProductoDetalle(){
+
+    public void eliminarProductoDetalle() {
         dtm = (DefaultTableModel) jtblDatos.getModel();
-            
+
         if (dtm.getRowCount() > 1) {
             if (jtblDatos.getSelectedRow() != -1) {
 
                 int cant = Integer.parseInt(dtm.getValueAt(jtblDatos.getSelectedRow(), 0).toString());
-                float pre_uni = Float.parseFloat(dtm.getValueAt(jtblDatos.getSelectedRow(), 2).toString());
+                float pre_uni = Float.parseFloat(dtm.getValueAt(jtblDatos.getSelectedRow(), 3).toString());
                 jlblCantidadProducto.setText(String.valueOf(Integer.parseInt(jlblCantidadProducto.getText()) - cant));
                 jlblSubtotal.setText(String.valueOf(Float.parseFloat(jlblSubtotal.getText()) - pre_uni));
                 jlblTotal.setText(String.valueOf((Float.parseFloat(jlblSubtotal.getText()) * 0.12) + Float.parseFloat(jlblSubtotal.getText())));
@@ -652,77 +683,81 @@ public class MainFrame extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Para elminar un producto, seleccione uno del detalle", "NO SELECTED ROW", JOptionPane.INFORMATION_MESSAGE);
             }
         }
-        
+
     }
-    
-    public void buscarProducto(){
+
+    public void buscarProducto() {
         try {
             if (!jtxtProducto.getText().trim().isEmpty()) {
                 if (existProduct(jtxtProducto.getText().trim())) {
                     obtenerProducto(producto, jtxtProducto.getText().trim());
                     habilitarCampos();
                     detalle_producto[0] = 1;
-                    detalle_producto[1] = producto[1];
-                    detalle_producto[2] = producto[2];
+                    detalle_producto[1] = producto[0];
+                    detalle_producto[2] = producto[1];
+                    detalle_producto[3] = producto[2];
                     agregarDetalle(detalle_producto);
-                    acum = acum + Float.parseFloat(detalle_producto[2].toString());
+                    acum = acum + Float.parseFloat(detalle_producto[3].toString());
                     jtxtProducto.setText("");
                     jtxtProducto.requestFocus();
                     float total = (float) (acum * 0.12);
-                    jlblTotal.setText(String.valueOf(acum+total));
+                    jlblTotal.setText(String.valueOf(acum + total));
                     jlblSubtotal.setText(String.valueOf(acum));
                     jlblCantidadProducto.setText(String.valueOf(jtblDatos.getRowCount()));
+                    jlblUltimoProducto.setText("Producto agregado --> Cod: "+producto[0].toString()+" - Nombre: "+producto[1].toString());
                     jbtnCerrarFactura.setEnabled(true);
-                }else{
+                    
+                } else {
                     JOptionPane.showMessageDialog(this, "Producto NO existente", "WARNING", JOptionPane.WARNING_MESSAGE);
                     jtxtProducto.setText("");
                 }
-                
+
             } else {
                 JOptionPane.showMessageDialog(this, "Codigo de producto NO válido", "WARNING", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "ERROR: " +e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "ERROR: " + e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    
-    
+
     public void buscarCliente() {
         try {
             String cedula = jtxtCedulaCliente.getText().trim();
 
             if (!cedula.isEmpty()) {
 
-                if (gc.validarCedula(cedula)) {
+                if (v.validarCedula(cedula) && v.verificarCedula(cedula)) {
                     if (gc.existCustomer(cedula)) {
                         habilitarCampos();
                         obtenerCliente(cliente, cedula);
-                        System.out.println("Nombre: " +cliente[1]+"\nApellido: "+cliente[2]); // <----- para prueba
-                        jlblDatosCliente.setText(cliente[1]+" "+cliente[2]);
+                        System.out.println("Nombre: " + cliente[1] + "\nApellido: " + cliente[2]); // <----- para prueba
+                        jlblDatosCliente.setText(cliente[1] + " " + cliente[2]);
                         jtxtProducto.requestFocus();
-                    }else{
-                        int n = JOptionPane.showConfirmDialog(this, "Cliente no existente, desea continuar como Consumidor Final?","Cliente no encontrado",JOptionPane.YES_NO_OPTION);
+                    } else {
+                        int n = JOptionPane.showConfirmDialog(this, "Cliente no existente, desea continuar como Consumidor Final?", "Cliente no encontrado", JOptionPane.YES_NO_OPTION);
                         if (n == 0) {
+
                             limpiarCampos();
-                            consumidorFinal(); 
+                            consumidorFinal();
                             jtxtProducto.requestFocus();
+
                         }
                     }
                 } else {
                     JOptionPane.showMessageDialog(this, "Cédula NO válida", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    jtxtCedulaCliente.setText("");
                 }
             } else {
 
                 JOptionPane.showMessageDialog(this, "Para asignar una factura, ingrese la cédula", "ADVERTENCIA", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "ERROR: " +e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "ERROR: " + e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
         }
 
     }
-    
-    public void deshabilitarCampos(){
+
+    public void deshabilitarCampos() {
         jcbxVendedores.setEnabled(false);
         jcbxPago.setEnabled(false);
         jtxtProducto.setEnabled(false);
@@ -762,7 +797,7 @@ public class MainFrame extends javax.swing.JFrame {
     
     public void obtenerCliente(String cliente[], String cedula){
         try {
-            String sql = "SELECT * FROM clientes WHERE CED_CLI = '"+cedula+"';";
+            String sql = "SELECT * FROM heroku_aba338fe797a93b.clientes WHERE CED_CLI = '"+cedula+"';";
             Connection c = con.ConexionBD();
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(sql);
@@ -783,7 +818,7 @@ public class MainFrame extends javax.swing.JFrame {
     
     public void agregarDetalle(Object rowData[]){
         dtm = (DefaultTableModel) jtblDatos.getModel();
-        Object encabezado[] = {"CANTIDAD", "NOMBRE PRODUCTO","SUBTOTAL"};
+        Object encabezado[] = {"CANTIDAD","CODIGO", "NOMBRE PRODUCTO","PRECIO UNITARIO"};
         dtm.setColumnIdentifiers(encabezado);
         dtm.addRow(rowData);
         jtblDatos.setModel(dtm);
@@ -796,7 +831,7 @@ public class MainFrame extends javax.swing.JFrame {
     
     public void obtenerProducto(Object producto[],String codigo){
         try {
-            String sql = "SELECT * FROM productos WHERE ID_PRO = '" + codigo + "';";
+            String sql = "SELECT * FROM heroku_aba338fe797a93b.productos WHERE ID_PRO = '" + codigo + "';";
             Connection c = con.ConexionBD();
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(sql);
@@ -814,7 +849,7 @@ public class MainFrame extends javax.swing.JFrame {
     
     public boolean existProduct(String codigo){
         try {
-            String sql = "SELECT COUNT(*) FROM productos WHERE ID_PRO = ?;";
+            String sql = "SELECT COUNT(*) FROM heroku_aba338fe797a93b.productos WHERE ID_PRO = ?;";
             Connection c = con.ConexionBD();
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, codigo);
@@ -835,7 +870,7 @@ public class MainFrame extends javax.swing.JFrame {
         try {
             DefaultComboBoxModel dcb = (DefaultComboBoxModel) jcbxVendedores.getModel();
             dcb.addElement("SELECCIONE UN VENDEDOR");
-            String sql = "SELECT * FROM vendedores";
+            String sql = "SELECT * FROM heroku_aba338fe797a93b.vendedores";
             Connection c = con.ConexionBD();
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(sql);
@@ -856,14 +891,6 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
     
-    public void getFactureNumber(){
-        try {
-            String sql = "";
-            
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "ERROR: " + e, "RUNTIME EXCEPTION", JOptionPane.ERROR_MESSAGE);
-        }
-    }
     /**
      * @param args the command line arguments
      */
@@ -930,6 +957,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jlblPcon;
     private javax.swing.JLabel jlblSubtotal;
     private javax.swing.JLabel jlblTotal;
+    private javax.swing.JLabel jlblUltimoProducto;
     private javax.swing.JLabel jlblVendedor;
     private javax.swing.JLabel jlblp;
     private javax.swing.JTable jtblDatos;
